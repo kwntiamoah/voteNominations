@@ -21,6 +21,7 @@ export class AppComponent implements OnInit {
   nomineeForm: FormGroup = new FormGroup({})
   isLoading: boolean = false;
   categories: any[] = []
+  event: any
 
   constructor(private fb: FormBuilder, private http: HttpClient, private route: ActivatedRoute) {
     this.nomineeForm = this.fb.group({
@@ -40,8 +41,8 @@ export class AppComponent implements OnInit {
       link_of_proof: [null, [Validators.required]],
       age: [null, [Validators.required]],
       dob: [null, [Validators.required]],
-      document_or_image: [null, [Validators.required]],
-      picture: [null, [Validators.required]]
+      document_or_image: [null, []],
+      picture: [null, []]
     })
   }
 
@@ -65,32 +66,67 @@ export class AppComponent implements OnInit {
   get document_or_image() { return this.nomineeForm.get('document_or_image') }
   get picture() { return this.nomineeForm.get('picture') }
 
-  ngOnInit(): void { 
+  ngOnInit(): void {
     this.route.queryParams
       .subscribe(params => {
-        !!params['entity_div_code'] && this.getCategories(params['entity_div_code'])
+        if (!!params['entity_div_code']) {
+          this.entity_div_code = params['entity_div_code']
+          this.getCategories(params['entity_div_code'])
+          this.getEventDetails(params['entity_div_code'])
+        }
+      })
+  }
+
+  getEventDetails(entity_div_code: String): void {
+    this.http.get(`https://vote-api.amazingsystems.org/get_event_details?entity_div_code=${entity_div_code}`)
+      .subscribe({
+        next: (res: any) => res['resp_code'] === '000' ? this.event = res['details'] : Swal.fire({ icon: 'error', text: 'Error getting Event details', confirmButtonColor: '#2563EB' }),
+        error: err => console.log(err),
       })
   }
 
   getCategories(entity_div_code: String): void {
-
-    this.isLoading = true
-
     this.http.get(`https://vote-api.amazingsystems.org/get_categories?entity_div_code=${entity_div_code}`)
       .subscribe({
-        next: (res: any) => res['resp_code'] === '000' ? this.categories = res['details'] : Swal.fire({ icon: 'error', text: 'Error getting Categories' }),
+        next: (res: any) => res['resp_code'] === '000' ? this.categories = res['details'] : Swal.fire({ icon: 'error', text: 'Error getting Categories', confirmButtonColor: '#2563EB' }),
         error: err => console.log(err),
-        complete: () => this.isLoading = false
       })
   }
 
   submit(): void {
-    if (this.nomineeForm.invalid) {
-      Swal.fire({ icon: 'error', text: 'Please fill all fields', confirmButtonColor: '#2563EB' })
-      return
+    this.isLoading = true
+    // if (this.nomineeForm.invalid) {
+    //   Swal.fire({ icon: 'error', text: 'Please fill all fields', confirmButtonColor: '#2563EB' })
+    //   return
+    // }
+
+    const payload = {
+      src: "WEB",
+      activity_type_code: "NOM",
+      plan_id: this.entity_div_code,
+      cat_id: this.category?.value,
+      delegate_name: this.name_of_nominator?.value,
+      delegate_mobile_number: '233' + this.nominee_phone?.value['number'].substring(1),
+      delegate_email: this.email?.value,
+      delegate_proof_url: this.link_of_proof?.value,
+      delegate_age: this.age?.value,
+      delegate_height: "",
+      delegate_weight: "",
+      delegate_file_reason: this.reason?.value,
+      delegate_location: this.location?.value,
+      delegate_region: this.region?.value,
+      delegate_residential_addr: "",
+      delegate_whatsapp_number: this.whatsapp?.value
     }
 
-    
-    return
+    this.http.post('https://vote-api.amazingsystems.org/req_nomination', payload)
+      .subscribe({
+        next: (res: any) => res['resp_code'] == '148' ? Swal.fire({ icon: 'success', text: res['resp_desc'], confirmButtonColor: '#2563EB' }) : Swal.fire({ icon: 'error', text: res['resp_desc'], confirmButtonColor: '#2563EB' }),
+        error: (err: any) => console.log(err),
+        complete: () => {
+          this.isLoading = false
+          this.nomineeForm.reset()
+        }
+      })
   }
 }

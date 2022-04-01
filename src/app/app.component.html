@@ -1,4 +1,23 @@
 <div class="px-5 lg:px-16 2xl:px-64 py-8">
+
+  <div *ngIf="isLoading == true" class="h-screen w-screen flex items-center justify-center">
+    <div class="rounded-xl bg-blue-400 w-16 h-16"></div>
+  </div>
+
+  <!-- show event details here -->
+  <div class="flex items-center space-x-8 mb-12">
+    <!-- logo -->
+    <div class="">
+      <img src="assets/images/logo.png" class="w-52 h-auto">
+    </div>
+
+    <!-- event details -->
+    <div class="flex flex-col">
+      <p class="font-bold uppercase">{{ event?.service_label }}</p>
+      <p class="text-xs font-bold text-gray-500">{{ event?.entity_name }}</p>
+    </div>
+  </div>
+
   <p class="font-bold text-lg">Nomination Form</p>
   <p class="pb-5">Please fill the form below</p>
   <form
@@ -13,6 +32,10 @@
         <option value="null" disabled selected>Select Category</option>
         <option value="{{category.cat_id}}" *ngFor="let category of categories">{{ category.category }}</option>
       </select>
+      <ng-container *ngIf="category?.invalid && category?.touched" class="flex flex-col">
+        <div><small *ngIf="category?.errors!['required']" class="text-red-500">* Please select Category</small>
+        </div>
+      </ng-container>
     </div>
 
     <!-- Contestant -->
@@ -24,6 +47,10 @@
         class="form-control"
         formControlName="name_of_nominee"
       />
+      <ng-container *ngIf="name_of_nominee?.invalid && name_of_nominee?.touched" class="flex flex-col">
+        <div><small *ngIf="name_of_nominee?.errors!['required']" class="text-red-500">* Please enter Nominee Name</small>
+        </div>
+      </ng-container>
     </div>
 
     <!-- Nominee phone -->
@@ -50,18 +77,30 @@
         >
         </ngx-intl-tel-input>
       </div>
+      <ng-container *ngIf="nominee_phone?.invalid && nominee_phone?.touched" class="flex flex-col">
+        <div><small *ngIf="nominee_phone?.errors!['required']" class="text-red-500">* Please enter Nominee Phone</small>
+        </div>
+      </ng-container>
     </div>
 
     <!-- nickname/stage name -->
     <div class="">
       <label for="contestant_name">Nickname/Stage Name</label>
       <input type="text" placeholder="Cutie" class="form-control" formControlName="nickname" />
+      <ng-container *ngIf="nickname?.invalid && nickname?.touched" class="flex flex-col">
+        <div><small *ngIf="nickname?.errors!['required']" class="text-red-500">* Please enter Nominee Nickname/Stage Name</small>
+        </div>
+      </ng-container>
     </div>
 
     <!-- organization -->
     <div class="">
       <label for="contestant_name">Name of Institution/Organization</label>
       <input placeholder="GFA" type="text" class="form-control" formControlName="organization" />
+      <ng-container *ngIf="organization?.invalid && organization?.touched" class="flex flex-col">
+        <div><small *ngIf="organization?.errors!['required']" class="text-red-500">* Please enter Organization Name</small>
+        </div>
+      </ng-container>
     </div>
 
     <!-- Nominator -->
@@ -73,6 +112,10 @@
         class="form-control"
         formControlName="name_of_nominator"
       />
+      <ng-container *ngIf="name_of_nominator?.invalid && name_of_nominator?.touched" class="flex flex-col">
+        <div><small *ngIf="name_of_nominator?.errors!['required']" class="text-red-500">* Please enter Nominator Name</small>
+        </div>
+      </ng-container>
     </div>
 
     <!-- Nominator phone -->
@@ -99,24 +142,40 @@
         >
         </ngx-intl-tel-input>
       </div>
+      <ng-container *ngIf="nominator_phone?.invalid && nominator_phone?.touched" class="flex flex-col">
+        <div><small *ngIf="nominator_phone?.errors!['required']" class="text-red-500">* Please enter Nominator Phone</small>
+        </div>
+      </ng-container>
     </div>
 
     <!-- Country -->
     <div class="">
       <label for="contestant_name">Country</label>
       <input type="text" placeholder="Ghana" class="form-control" formControlName="country" />
+      <ng-container *ngIf="country?.invalid && country?.touched" class="flex flex-col">
+        <div><small *ngIf="country?.errors!['required']" class="text-red-500">* Please enter Country</small>
+        </div>
+      </ng-container>
     </div>
 
     <!-- Region -->
     <div class="">
       <label for="contestant_name">Region/State</label>
       <input placeholder="Accra" type="text" class="form-control" formControlName="region" />
+      <ng-container *ngIf="region?.invalid && region?.touched" class="flex flex-col">
+        <div><small *ngIf="region?.errors!['required']" class="text-red-500">* Please enter Region</small>
+        </div>
+      </ng-container>
     </div>
 
     <!-- Whatsapp -->
     <div class="">
       <label for="contestant_name">Whatsapp No.</label>
       <input placeholder="054 000 0000" type="tel" class="form-control" formControlName="whatsapp" />
+      <ng-container *ngIf="whatsapp?.invalid && whatsapp?.touched" class="flex flex-col">
+        <div><small *ngIf="whatsapp?.errors!['required']" class="text-red-500">* Please enter Whatsapp No.</small>
+        </div>
+      </ng-container>
     </div>
 
     <!-- reason for nomination -->
@@ -128,18 +187,30 @@
         rows="5"
         formControlName="reason"
       ></textarea>
+      <ng-container *ngIf="reason?.invalid && reason?.touched" class="flex flex-col">
+        <div><small *ngIf="reason?.errors!['required']" class="text-red-500">* Please enter Reason for Nomination</small>
+        </div>
+      </ng-container>
     </div>
 
     <!-- Email -->
     <div class="">
       <label for="contestant_name">Email</label>
       <input placeholder="samuel@example.com" type="email" class="form-control" formControlName="email" />
+      <ng-container *ngIf="email?.invalid && email?.touched" class="flex flex-col">
+        <div><small *ngIf="email?.errors!['required']" class="text-red-500">* Please enter Email</small>
+        </div>
+      </ng-container>
     </div>
 
     <!-- location -->
     <div class="">
       <label for="contestant_name">Location</label>
       <input placeholder="Circle" type="text" class="form-control" formControlName="location" />
+      <ng-container *ngIf="location?.invalid && location?.touched" class="flex flex-col">
+        <div><small *ngIf="location?.errors!['required']" class="text-red-500">* Please enter Location</small>
+        </div>
+      </ng-container>
     </div>
 
     <!-- Link of proof -->
@@ -148,18 +219,30 @@
         >Link of proof (Website or Social Media Page)</label
       >
       <input placeholder="www.example.com" type="text" class="form-control" formControlName="link_of_proof" />
+      <ng-container *ngIf="link_of_proof?.invalid && link_of_proof?.touched" class="flex flex-col">
+        <div><small *ngIf="link_of_proof?.errors!['required']" class="text-red-500">* Please enter link of proof</small>
+        </div>
+      </ng-container>
     </div>
 
     <!-- Age -->
     <div class="">
       <label for="contestant_name">Age</label>
       <input placeholder="23" type="text" class="form-control" formControlName="age" />
+      <ng-container *ngIf="age?.invalid && age?.touched" class="flex flex-col">
+        <div><small *ngIf="age?.errors!['required']" class="text-red-500">* Please enter Age</small>
+        </div>
+      </ng-container>
     </div>
 
     <!-- DOB -->
     <div class="">
       <label for="contestant_name">Date of Birth</label>
       <input type="date" class="form-control" formControlName="dob" />
+      <ng-container *ngIf="dob?.invalid && dob?.touched" class="flex flex-col">
+        <div><small *ngIf="dob?.errors!['required']" class="text-red-500">* Please select Date of Birth </small>
+        </div>
+      </ng-container>
     </div>
 
     <!-- upload proof -->

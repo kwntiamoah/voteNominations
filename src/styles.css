@@ -1,1 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.form-control {
+    @apply border rounded px-4 py-2 outline-none focus:border-blue-400 w-full mt-1
+}

@@ -250,6 +250,7 @@
       <label for="contestant_name">Upload Proof (document/Image)</label>
       <input
         type="file"
+        (change)="convertFile($event, 'doc_or_image')"
         class="form-control"
         formControlName="document_or_image"
       />
@@ -258,7 +259,7 @@
     <!-- picture upload -->
     <div class="">
       <label for="contestant_name">Upload Picture</label>
-      <input type="file" class="form-control" formControlName="picture" />
+      <input type="file" class="form-control" formControlName="picture" (change)="convertFile($event, 'picture')" />
     </div>
 
     <div class="flex flex-col items-end justify-end">

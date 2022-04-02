@@ -41,8 +41,8 @@ export class AppComponent implements OnInit {
       link_of_proof: [null, [Validators.required]],
       age: [null, [Validators.required]],
       dob: [null, [Validators.required]],
-      document_or_image: [null, []],
-      picture: [null, []]
+      document_or_image: ["", [Validators.required]],
+      picture: ["", [Validators.required]]
     })
   }
 
@@ -83,12 +83,25 @@ export class AppComponent implements OnInit {
     this.http.get(`https://vote-api.amazingsystems.org/get_categories?entity_div_code=MDAwMDE2`)
       .subscribe({
         next: (res: any) => res['resp_code'] === '000' ? this.categories = res['details'] : Swal.fire({ icon: 'error', text: 'Error getting Categories', confirmButtonColor: '#2563EB' }),
-        error: err =>  Swal.fire({ icon: 'error', text: 'Error getting Categories', confirmButtonColor: '#2563EB' }),
+        error: err => Swal.fire({ icon: 'error', text: 'Error getting Categories', confirmButtonColor: '#2563EB' }),
       })
   }
 
+  convertFile(e: any, src: string) {
+    var file = e.target.files[0]
+    var reader = new FileReader()
+
+    reader.onloadend = () => {
+      src === 'picture'
+        ? this.picture?.setValue(reader.result)
+        : this.document_or_image?.setValue(reader.result)
+    }
+
+    reader.readAsDataURL(file)
+  }
+
   submit(): void {
-    this.isLoading = true
+    // this.isLoading = true
     // if (this.nomineeForm.invalid) {
     //   Swal.fire({ icon: 'error', text: 'Please fill all fields', confirmButtonColor: '#2563EB' })
     //   return
@@ -110,17 +123,15 @@ export class AppComponent implements OnInit {
       delegate_location: this.location?.value,
       delegate_region: this.region?.value,
       delegate_residential_addr: "",
-      delegate_whatsapp_number: this.whatsapp?.value
+      delegate_whatsapp_number: this.whatsapp?.value,
+      picture_file: this.picture?.value,
+      proof_file: this.document_or_image?.value
     }
 
-    this.http.post('https://vote-api.amazingsystems.org/req_nomination', payload)
+    this.http.post('https://vote-api.amazingsystems.org/req_nomination', JSON.stringify(payload))
       .subscribe({
-        next: (res: any) => res['resp_code'] == '148' ? Swal.fire({ icon: 'success', text: res['resp_desc'], confirmButtonColor: '#2563EB' }) : Swal.fire({ icon: 'error', text: res['resp_desc'], confirmButtonColor: '#2563EB' }),
-        error: (err: any) => console.log(err),
-        complete: () => {
-          this.isLoading = false
-          this.nomineeForm.reset()
-        }
+        next: (res: any) => res['resp_code'] == '148' ? Swal.fire({ icon: 'success', text: res['resp_desc'], confirmButtonColor: '#2563EB' }).then(() => window.location.reload()) : Swal.fire({ icon: 'error', text: res['resp_desc'], confirmButtonColor: '#2563EB' }).then(() => window.location.reload()),
+        error: (err: any) => Swal.fire({ icon: 'error', text: 'Sorry an error occured', confirmButtonColor: '#2563EB' }).then(() => window.location.reload()),
       })
   }
 }

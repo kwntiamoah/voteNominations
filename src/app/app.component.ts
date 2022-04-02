@@ -74,7 +74,10 @@ export class AppComponent implements OnInit {
   getEventDetails(): void {
     this.http.get(`https://vote-api.amazingsystems.org/get_event_details?entity_div_code=MDAwMDE2`)
       .subscribe({
-        next: (res: any) => res['resp_code'] === '000' ? this.event = res['details'] : Swal.fire({ icon: 'error', text: 'Error getting Event details', confirmButtonColor: '#2563EB' }),
+        next: (res: any) => {
+          console.log(res)
+          res['resp_code'] === '000' ? this.event = res['details'] : Swal.fire({ icon: 'error', text: 'Error getting Event details', confirmButtonColor: '#2563EB' })
+        },
         error: err => console.log(err),
       })
   }
@@ -82,7 +85,10 @@ export class AppComponent implements OnInit {
   getCategories(): void {
     this.http.get(`https://vote-api.amazingsystems.org/get_categories?entity_div_code=MDAwMDE2`)
       .subscribe({
-        next: (res: any) => res['resp_code'] === '000' ? this.categories = res['details'] : Swal.fire({ icon: 'error', text: 'Error getting Categories', confirmButtonColor: '#2563EB' }),
+        next: (res: any) => {
+          console.log(res)
+          res['resp_code'] === '000' ? this.categories = res['details'] : Swal.fire({ icon: 'error', text: 'Error getting Categories', confirmButtonColor: '#2563EB' })
+        },
         error: err => console.log(err),
       })
   }

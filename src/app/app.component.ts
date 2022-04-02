@@ -67,26 +67,20 @@ export class AppComponent implements OnInit {
   get picture() { return this.nomineeForm.get('picture') }
 
   ngOnInit(): void {
-    this.route.queryParams
-      .subscribe(params => {
-        if (!!params['entity_div_code']) {
-          this.entity_div_code = params['entity_div_code']
-          this.getCategories(params['entity_div_code'])
-          this.getEventDetails(params['entity_div_code'])
-        }
-      })
+    this.getEventDetails()
+    this.getCategories()
   }
 
-  getEventDetails(entity_div_code: String): void {
-    this.http.get(`https://vote-api.amazingsystems.org/get_event_details?entity_div_code=${entity_div_code}`)
+  getEventDetails(): void {
+    this.http.get(`https://vote-api.amazingsystems.org/get_event_details?entity_div_code=MDAwMDE2`)
       .subscribe({
         next: (res: any) => res['resp_code'] === '000' ? this.event = res['details'] : Swal.fire({ icon: 'error', text: 'Error getting Event details', confirmButtonColor: '#2563EB' }),
         error: err => console.log(err),
       })
   }
 
-  getCategories(entity_div_code: String): void {
-    this.http.get(`https://vote-api.amazingsystems.org/get_categories?entity_div_code=${entity_div_code}`)
+  getCategories(): void {
+    this.http.get(`https://vote-api.amazingsystems.org/get_categories?entity_div_code=MDAwMDE2`)
       .subscribe({
         next: (res: any) => res['resp_code'] === '000' ? this.categories = res['details'] : Swal.fire({ icon: 'error', text: 'Error getting Categories', confirmButtonColor: '#2563EB' }),
         error: err => console.log(err),
